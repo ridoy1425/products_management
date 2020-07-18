@@ -179,11 +179,12 @@ public class productForm extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnView))
+                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -191,12 +192,11 @@ public class productForm extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Price)
                     .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23)
+                .addGap(24, 24, 24)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(comboCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnView))
-                .addGap(35, 66, Short.MAX_VALUE))
+                    .addComponent(comboCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 67, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -241,9 +241,9 @@ public class productForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
@@ -285,6 +285,7 @@ public class productForm extends javax.swing.JFrame {
        }catch(Exception e){
            JOptionPane.showMessageDialog(null, "Error"+ e);
        }
+        showTableData();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     public void showTableData(){
@@ -305,13 +306,13 @@ public class productForm extends javax.swing.JFrame {
             Connection con = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/productdb", "root", "");
             String sql="select * from products where id='"+txtId.getText()+"'";
             PreparedStatement stm = con.prepareStatement(sql);
-            Resultset set = (Resultset) stm.executeQuery();
+            ResultSet resultset = stm.executeQuery();
             
-//            while(set.next()){
-//                txtName.setText(set.getString("name"));
-//                txtPrice.setText(set.getString("price"));
-//                comboCat.setSelectedItem(set.getString("category"));
-//            }
+          if(resultset.next()){
+              txtName.setText(resultset.getString("name"));
+             txtPrice.setText(resultset.getString("price"));
+              comboCat.setSelectedItem(resultset.getString("category"));
+          }
         }catch(Exception e) {
             JOptionPane.showMessageDialog(null, "Error Found"+ e);
         }
@@ -324,7 +325,22 @@ public class productForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        
+        try{
+            Class.forName("java.sql.Driver");
+            Connection con = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/productdb", "root", "");
+            //'"+txtId.getText()+"', '"+txtName.getText()+"', '"+txtPrice.getText()+"', '"+comboCat.getSelectedItem().toString()+"',
+            String sql = "delete from products where id='"+txtId.getText()+"'";
+            PreparedStatement stm = con.prepareStatement(sql);
+//            stm.setString(1,txtId.getText());
+//            stm.setString(2,txtName.getText());
+//            stm.setString(3,txtPrice.getText());
+//            stm.setString(4,comboCat.getSelectedItem().toString());
+            stm.execute();
+            JOptionPane.showMessageDialog(null, "Data Successfully Deleted");
+       }catch(Exception e){
+           JOptionPane.showMessageDialog(null, "Error"+ e);
+       }
+        showTableData();      
         
     }//GEN-LAST:event_btnDeleteActionPerformed
 
